@@ -23,22 +23,19 @@ func init() {
 func main() {
 	opts := util.Options{
 		Verbose:    false,
-		Catered:    false,
-		Overtime:   false,
-		Vab:        false,
 		ShowStatus: false,
-		Loud:       false,
+		Project:    "",
 	}
 
 	app := &cli.App{
-		Name:     "Butler Burton",
-		Usage:    "a smartish utility to manage your BL time sheet",
+		Name:     "Klatter Burton",
+		Usage:    "a smartish utility for reporting time spent working on Klatter projects",
 		Version:  Version,
 		Compiled: time.Now(),
 		Authors: []*cli.Author{
 			{
 				Name:  "Patrik Olin",
-				Email: "patrik@olin.work",
+				Email: "olin@klatter.se",
 			},
 		},
 		Flags: []cli.Flag{
@@ -48,13 +45,13 @@ func main() {
 				Usage:       "turn on verbose mode",
 				Destination: &opts.Verbose,
 			},
-			&cli.BoolFlag{
-				Name:        "loud",
-				Aliases:     []string{"l"},
-				Value:       false,
-				Usage:       "turn on loud mode for this command (send Teams message)",
-				Destination: &opts.Loud,
-			},
+			// &cli.BoolFlag{
+			// 	Name:        "loud",
+			// 	Aliases:     []string{"l"},
+			// 	Value:       false,
+			// 	Usage:       "turn on loud mode for this command (send Teams message)",
+			// 	Destination: &opts.Loud,
+			// },
 		},
 		Commands: []*cli.Command{
 			{
@@ -62,18 +59,15 @@ func main() {
 				Aliases: []string{"ci"},
 				Usage:   "trigger check in sequence",
 				Flags: []cli.Flag{
-					&cli.BoolFlag{
-						Name:        "vab",
-						Aliases:     []string{"v"},
-						Value:       false,
-						Usage:       "check in as absent as result of vab",
-						Destination: &opts.Vab,
+					&cli.StringFlag{
+						Name:        "project",
+						Aliases:     []string{"p"},
+						Value:       "",
+						Usage:       "which project to check in time to",
+						Destination: &opts.Project,
 					},
 				},
 				Action: func(c *cli.Context) error {
-					if opts.Vab {
-						return cmd.VabCheckin(opts)
-					}
 					return cmd.Checkin(opts)
 				},
 			},
@@ -81,21 +75,21 @@ func main() {
 				Name:    "check out",
 				Aliases: []string{"co"},
 				Usage:   "trigger check out sequence",
-				Flags: []cli.Flag{
-					&cli.BoolFlag{
-						Name:        "catered",
-						Aliases:     []string{"c"},
-						Value:       false,
-						Usage:       "check BL-lunch field in time sheet for todays shift",
-						Destination: &opts.Catered,
-					},
-					&cli.BoolFlag{
-						Name:        "overtime",
-						Aliases:     []string{"o"},
-						Value:       false,
-						Usage:       "write overtime to overtime column",
-						Destination: &opts.Overtime,
-					},
+				Flags:   []cli.Flag{
+					// &cli.BoolFlag{
+					// 	Name:        "catered",
+					// 	Aliases:     []string{"c"},
+					// 	Value:       false,
+					// 	Usage:       "check BL-lunch field in time sheet for todays shift",
+					// 	Destination: &opts.Catered,
+					// },
+					// &cli.BoolFlag{
+					// 	Name:        "overtime",
+					// 	Aliases:     []string{"o"},
+					// 	Value:       false,
+					// 	Usage:       "write overtime to overtime column",
+					// 	Destination: &opts.Overtime,
+					// },
 				},
 				Action: func(c *cli.Context) error {
 					return cmd.Checkout(opts)
@@ -109,59 +103,59 @@ func main() {
 					return cmd.CheckTime()
 				},
 			},
-			{
-				Name:     "time sheet",
-				Aliases:  []string{"ts"},
-				Usage:    "commands directly related to time sheet",
-				Category: "time sheet",
-				Subcommands: []*cli.Command{
-					{
-						Name:     "create",
-						Aliases:  []string{"c"},
-						Usage:    "download original time sheet and name it according to month and username",
-						Category: "time sheet",
-						Action: func(c *cli.Context) error {
-							return cmd.CreateNewReport()
-						},
-					},
-					{
-						Name:     "get",
-						Aliases:  []string{"g"},
-						Usage:    "get current time sheet filename",
-						Category: "time sheet",
-						Action: func(c *cli.Context) error {
-							return cmd.GetReportFilename()
-						},
-					},
-					{
-						Name:     "set",
-						Aliases:  []string{"s"},
-						Usage:    "set new time sheet filename",
-						Category: "time sheet",
-						Action: func(c *cli.Context) error {
-							return cmd.SetReportFilename(c.Args().First())
-						},
-					},
-					{
-						Name:     "upload",
-						Aliases:  []string{"u"},
-						Usage:    "upload the time sheet to sharepoint",
-						Category: "time sheet",
-						Action: func(c *cli.Context) error {
-							return cmd.UploadReport()
-						},
-					},
-					{
-						Name:     "download",
-						Aliases:  []string{"d"},
-						Usage:    "download the time sheet from sharepoint",
-						Category: "time sheet",
-						Action: func(c *cli.Context) error {
-							return cmd.DownloadReport()
-						},
-					},
-				},
-			},
+			// {
+			// 	Name:     "time sheet",
+			// 	Aliases:  []string{"ts"},
+			// 	Usage:    "commands directly related to time sheet",
+			// 	Category: "time sheet",
+			// 	Subcommands: []*cli.Command{
+			// 		{
+			// 			Name:     "create",
+			// 			Aliases:  []string{"c"},
+			// 			Usage:    "download original time sheet and name it according to month and username",
+			// 			Category: "time sheet",
+			// 			Action: func(c *cli.Context) error {
+			// 				return cmd.CreateNewReport()
+			// 			},
+			// 		},
+			// 		{
+			// 			Name:     "get",
+			// 			Aliases:  []string{"g"},
+			// 			Usage:    "get current time sheet filename",
+			// 			Category: "time sheet",
+			// 			Action: func(c *cli.Context) error {
+			// 				return cmd.GetReportFilename()
+			// 			},
+			// 		},
+			// 		{
+			// 			Name:     "set",
+			// 			Aliases:  []string{"s"},
+			// 			Usage:    "set new time sheet filename",
+			// 			Category: "time sheet",
+			// 			Action: func(c *cli.Context) error {
+			// 				return cmd.SetReportFilename(c.Args().First())
+			// 			},
+			// 		},
+			// 		{
+			// 			Name:     "upload",
+			// 			Aliases:  []string{"u"},
+			// 			Usage:    "upload the time sheet to sharepoint",
+			// 			Category: "time sheet",
+			// 			Action: func(c *cli.Context) error {
+			// 				return cmd.UploadReport()
+			// 			},
+			// 		},
+			// 		{
+			// 			Name:     "download",
+			// 			Aliases:  []string{"d"},
+			// 			Usage:    "download the time sheet from sharepoint",
+			// 			Category: "time sheet",
+			// 			Action: func(c *cli.Context) error {
+			// 				return cmd.DownloadReport()
+			// 			},
+			// 		},
+			// 	},
+			// },
 			{
 				Name:     "config",
 				Aliases:  []string{"c"},
@@ -188,22 +182,22 @@ func main() {
 					},
 				},
 			},
-			{
-				Name:    "afk",
-				Aliases: []string{"a"},
-				Usage:   "set afk status",
-				Action: func(c *cli.Context) error {
-					return cmd.ToggleAFK(c.Args().Get(0), opts)
-				},
-			},
-			{
-				Name:    "exercise",
-				Aliases: []string{"ex"},
-				Usage:   "set exercise status",
-				Action: func(c *cli.Context) error {
-					return cmd.ToggleExercise(c.Args().Get(0), opts)
-				},
-			},
+			// {
+			// 	Name:    "afk",
+			// 	Aliases: []string{"a"},
+			// 	Usage:   "set afk status",
+			// 	Action: func(c *cli.Context) error {
+			// 		return cmd.ToggleAFK(c.Args().Get(0), opts)
+			// 	},
+			// },
+			// {
+			// 	Name:    "exercise",
+			// 	Aliases: []string{"ex"},
+			// 	Usage:   "set exercise status",
+			// 	Action: func(c *cli.Context) error {
+			// 		return cmd.ToggleExercise(c.Args().Get(0), opts)
+			// 	},
+			// },
 		},
 	}
 

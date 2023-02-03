@@ -12,6 +12,7 @@ require (
 	github.com/jedib0t/go-pretty v4.3.0+incompatible // indirect
 	github.com/koltyakov/gosip v0.0.0-20210603074636-4c9eaa4e31e3
 	github.com/koltyakov/gosip-sandbox v0.0.0-20210522115717-4d41257ecc09
+	github.com/lib/pq v1.10.7
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/xuri/excelize/v2 v2.4.1

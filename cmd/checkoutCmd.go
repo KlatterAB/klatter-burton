@@ -21,33 +21,28 @@ func Checkout(opts util.Options) error {
 		log.Fatal(err)
 		return err
 	}
-	var valRound time.Time
-	if err := db.Store.Get("checkinRounded", &valRound); err == skvs.ErrNotFound {
-		fmt.Println("not found")
+	tci := CalculateTimeCheckedIn(valUnix)
+	fmt.Println("Ok, checking out.")
+	checkedInMsg := fmt.Sprintf("Time spent checked in: %s", tci)
+
+	de := time.Unix(valUnix, 0).Local().Format("15:04:05")
+	project, err := GetProject(valUnix)
+	if err != nil {
+		fmt.Println("Could not get project")
 		return err
-	} else if err != nil {
-		log.Fatal(err)
-		return err
-	} else {
-		tci := CalculateTimeCheckedIn(valUnix)
-		fmt.Println("Ok, checking out.")
-		checkedInMsg := fmt.Sprintf("Time spent checked in: %s\n", tci)
-		fmt.Println(checkedInMsg)
-
-		de := time.Unix(valUnix, 0).Local().Format("15:04:05")
-		dr := valRound.Local().Format("15:04:05")
-
-		d := (15 * time.Minute)
-
-		checkedInDurMsg := fmt.Sprintf("You checked in at: %s (%s)\n", de, dr)
-		fmt.Println(checkedInDurMsg)
-
-		if cfg.Cfg.Notifications {
-			n := fmt.Sprintf("%s%s \n", checkedInMsg, checkedInDurMsg)
-			util.Notify("Checking out \n", n)
-		}
-
 	}
+
+	db.SetMinutesWorked(int(tci.Minutes()), project, cfg.Cfg.ID)
+	// d := (15 * time.Minute)
+
+	checkedInDurMsg := fmt.Sprintf("You checked in at: %s\n", de)
+	fmt.Print(checkedInDurMsg)
+
+	if cfg.Cfg.Notifications {
+		n := fmt.Sprintf("%s\n%s \n", checkedInMsg, checkedInDurMsg)
+		util.Notify("Checking out \n", n)
+	}
+
 	return nil
 }
 
@@ -56,6 +51,6 @@ func CalculateTimeCheckedIn(checkin int64) time.Duration {
 	t2 := time.Since(t1)
 
 	d := (1000 * time.Millisecond)
-	trunc := t2.Truncate(d)
+	trunc := t2.Round(d)
 	return trunc
 }

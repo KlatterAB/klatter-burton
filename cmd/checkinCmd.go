@@ -11,16 +11,13 @@ import (
 )
 
 func Checkin(opts util.Options) error {
-	d := (15 * time.Minute)
-	rounded := time.Now().Local().Round(d)
+	// d := (15 * time.Minute)
 	checkinUnix := time.Now().Unix()
 	db.Store.Put("checkinUnix", checkinUnix)
-	db.Store.Put("checkinRounded", rounded)
-	db.Store.Put(strconv.FormatInt(checkinUnix, 10), opts.Project)
+	db.Store.Put(strconv.FormatInt(checkinUnix, 10), opts.Project.ID)
 
 	de := time.Unix(checkinUnix, 0).Local().Format("15:04:05")
-	dr := rounded.Format("15:04:05")
-	checkinMsg := fmt.Sprintf("Ok, checked in at %s (%s)\n", de, dr)
+	checkinMsg := fmt.Sprintf("Ok, checked in at %s\n", de)
 	fmt.Println(checkinMsg)
 
 	if cfg.Cfg.Notifications {

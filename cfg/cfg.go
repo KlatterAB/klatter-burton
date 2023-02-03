@@ -12,44 +12,15 @@ import (
 )
 
 type Config struct {
-	Name          string    `yaml:"name"`
-	Color         string    `yaml:"color"`
-	WebhookURL    string    `yaml:"webhook_url"`
-	Notifications bool      `yaml:"notifications"`
-	VabMsg        string    `yaml:"vab_msg"`
-	TimeSheet     TimeSheet `yaml:"time_sheet"`
-}
-
-type TimeSheet struct {
-	EmployeeID string `yaml:"employee_id"`
-	Path       string `yaml:"path"`
-	Update     bool   `yaml:"update"`
-}
-
-type ColumnConfig struct {
-	CheckinCol                    string
-	CheckoutCol                   string
-	LunchCol                      string
-	BLLunchCol                    string
-	OvertimeCol                   string
-	VabCol                        string
-	AFKCol                        string
-	ExerciseCol                   string
-	WorkTimeCol                   string
-	HoursSalaryCol                string
-	EmployeeIDCoords              string
-	TransferredPositiveFlexCoords string
-	TransferredNegativeFlexCoords string
-	TransferredCompTimeCoords     string
-	OutgoingFlexCoords            string
-	OutgoingCompTimeCoords        string
+	Name          string `yaml:"name"`
+	Color         string `yaml:"color"`
+	Notifications bool   `yaml:"notifications"`
+	ID            string `yaml:"id"`
 }
 
 var Cfg Config
-var ColCfg ColumnConfig
 
 func InitConfig() {
-	ColCfg = createColumnConfig()
 	fpath := GetConfigPath()
 
 	err := cleanenv.ReadConfig(fpath, &Cfg)
@@ -60,7 +31,7 @@ func InitConfig() {
 }
 
 func GetConfigPath() string {
-	dir := os.Getenv("HOME") + "/.config/butlerburton/"
+	dir := os.Getenv("HOME") + "/.config/klatter-burton/"
 	err := makeDirectoryIfNotExists(dir)
 	if err != nil {
 		fmt.Println(err)
@@ -84,14 +55,8 @@ func createDefaultConfig(path string) {
 	Cfg = Config{
 		Name:          os.Getenv("USER"),
 		Color:         "#46D9FF",
-		WebhookURL:    "",
 		Notifications: true,
-		VabMsg:        "Jag vabbar idag, försök hålla skutan flytande så är jag tillbaka imorgon",
-		TimeSheet: TimeSheet{
-			EmployeeID: "0000",
-			Path:       os.Getenv("HOME") + "/.butlerburton/",
-			Update:     false,
-		},
+		ID:            "öö",
 	}
 
 	bytes, err := yaml.Marshal(Cfg)
@@ -104,27 +69,6 @@ func createDefaultConfig(path string) {
 		fmt.Println("failed to create default config file")
 		fmt.Println(e)
 		panic(e)
-	}
-}
-
-func createColumnConfig() ColumnConfig {
-	return ColumnConfig{
-		CheckinCol:                    "C",
-		CheckoutCol:                   "D",
-		LunchCol:                      "F",
-		BLLunchCol:                    "I",
-		OvertimeCol:                   "R",
-		VabCol:                        "L",
-		AFKCol:                        "G",
-		ExerciseCol:                   "J",
-		WorkTimeCol:                   "H",
-		HoursSalaryCol:                "X",
-		EmployeeIDCoords:              "C2",
-		TransferredPositiveFlexCoords: "S2",
-		TransferredNegativeFlexCoords: "S3",
-		TransferredCompTimeCoords:     "S4",
-		OutgoingFlexCoords:            "T2",
-		OutgoingCompTimeCoords:        "T4",
 	}
 }
 

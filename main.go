@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -17,6 +18,7 @@ var Version string
 
 func init() {
 	db.InitDB()
+	db.InitStore()
 	cfg.InitConfig()
 }
 
@@ -24,7 +26,10 @@ func main() {
 	opts := util.Options{
 		Verbose:    false,
 		ShowStatus: false,
-		Project:    "",
+		Project: util.Project{
+			Name: "",
+			ID:   "",
+		},
 	}
 
 	app := &cli.App{
@@ -45,14 +50,8 @@ func main() {
 				Usage:       "turn on verbose mode",
 				Destination: &opts.Verbose,
 			},
-			// &cli.BoolFlag{
-			// 	Name:        "loud",
-			// 	Aliases:     []string{"l"},
-			// 	Value:       false,
-			// 	Usage:       "turn on loud mode for this command (send Teams message)",
-			// 	Destination: &opts.Loud,
-			// },
 		},
+		EnableBashCompletion: true,
 		Commands: []*cli.Command{
 			{
 				Name:    "check in",
@@ -63,8 +62,8 @@ func main() {
 						Name:        "project",
 						Aliases:     []string{"p"},
 						Value:       "",
-						Usage:       "which project to check in time to",
-						Destination: &opts.Project,
+						Usage:       "id of the project to check in time for",
+						Destination: &opts.Project.ID,
 					},
 				},
 				Action: func(c *cli.Context) error {
@@ -75,22 +74,7 @@ func main() {
 				Name:    "check out",
 				Aliases: []string{"co"},
 				Usage:   "trigger check out sequence",
-				Flags:   []cli.Flag{
-					// &cli.BoolFlag{
-					// 	Name:        "catered",
-					// 	Aliases:     []string{"c"},
-					// 	Value:       false,
-					// 	Usage:       "check BL-lunch field in time sheet for todays shift",
-					// 	Destination: &opts.Catered,
-					// },
-					// &cli.BoolFlag{
-					// 	Name:        "overtime",
-					// 	Aliases:     []string{"o"},
-					// 	Value:       false,
-					// 	Usage:       "write overtime to overtime column",
-					// 	Destination: &opts.Overtime,
-					// },
-				},
+				Flags:   []cli.Flag{},
 				Action: func(c *cli.Context) error {
 					return cmd.Checkout(opts)
 				},
@@ -103,59 +87,29 @@ func main() {
 					return cmd.CheckTime()
 				},
 			},
-			// {
-			// 	Name:     "time sheet",
-			// 	Aliases:  []string{"ts"},
-			// 	Usage:    "commands directly related to time sheet",
-			// 	Category: "time sheet",
-			// 	Subcommands: []*cli.Command{
-			// 		{
-			// 			Name:     "create",
-			// 			Aliases:  []string{"c"},
-			// 			Usage:    "download original time sheet and name it according to month and username",
-			// 			Category: "time sheet",
-			// 			Action: func(c *cli.Context) error {
-			// 				return cmd.CreateNewReport()
-			// 			},
-			// 		},
-			// 		{
-			// 			Name:     "get",
-			// 			Aliases:  []string{"g"},
-			// 			Usage:    "get current time sheet filename",
-			// 			Category: "time sheet",
-			// 			Action: func(c *cli.Context) error {
-			// 				return cmd.GetReportFilename()
-			// 			},
-			// 		},
-			// 		{
-			// 			Name:     "set",
-			// 			Aliases:  []string{"s"},
-			// 			Usage:    "set new time sheet filename",
-			// 			Category: "time sheet",
-			// 			Action: func(c *cli.Context) error {
-			// 				return cmd.SetReportFilename(c.Args().First())
-			// 			},
-			// 		},
-			// 		{
-			// 			Name:     "upload",
-			// 			Aliases:  []string{"u"},
-			// 			Usage:    "upload the time sheet to sharepoint",
-			// 			Category: "time sheet",
-			// 			Action: func(c *cli.Context) error {
-			// 				return cmd.UploadReport()
-			// 			},
-			// 		},
-			// 		{
-			// 			Name:     "download",
-			// 			Aliases:  []string{"d"},
-			// 			Usage:    "download the time sheet from sharepoint",
-			// 			Category: "time sheet",
-			// 			Action: func(c *cli.Context) error {
-			// 				return cmd.DownloadReport()
-			// 			},
-			// 		},
-			// 	},
-			// },
+			{
+				Name:    "add project",
+				Aliases: []string{"ap"},
+				Usage:   "add a new project to the database with project name and id",
+				Action: func(c *cli.Context) error {
+					if c.Args().Len() < 2 {
+						fmt.Println("You need to supply two arguments: project name and project id")
+						return nil
+					}
+
+					name := c.Args().Get(0)
+					id := c.Args().Get(1)
+					return cmd.AddProject(name, id)
+				},
+			},
+			{
+				Name:    "check project",
+				Aliases: []string{"cp"},
+				Usage:   "show the checked in project name",
+				Action: func(c *cli.Context) error {
+					return cmd.CheckProject()
+				},
+			},
 			{
 				Name:     "config",
 				Aliases:  []string{"c"},
@@ -182,22 +136,6 @@ func main() {
 					},
 				},
 			},
-			// {
-			// 	Name:    "afk",
-			// 	Aliases: []string{"a"},
-			// 	Usage:   "set afk status",
-			// 	Action: func(c *cli.Context) error {
-			// 		return cmd.ToggleAFK(c.Args().Get(0), opts)
-			// 	},
-			// },
-			// {
-			// 	Name:    "exercise",
-			// 	Aliases: []string{"ex"},
-			// 	Usage:   "set exercise status",
-			// 	Action: func(c *cli.Context) error {
-			// 		return cmd.ToggleExercise(c.Args().Get(0), opts)
-			// 	},
-			// },
 		},
 	}
 

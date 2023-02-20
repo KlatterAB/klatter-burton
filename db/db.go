@@ -64,7 +64,7 @@ func GetCheckinTime() (int64, error) {
 }
 
 func SetMinutesWorked(minutes int, project, user string) error {
-	inputStmt := "INSERT INTO minutes_worked (hours, project_id, worker_id) VALUES ($1, $2, $3)"
+	inputStmt := "INSERT INTO minutes_worked (minutes, project_id, worker_id) VALUES ($1, $2, $3)"
 	_, err := db.Exec(inputStmt, minutes, project, user)
 	if err != nil {
 		return err
@@ -108,7 +108,8 @@ func getPqslInfo() string {
 }
 
 func readEnvFromFile() {
-	err := cleanenv.ReadConfig("kb.yml", &cfg)
+	dir := os.Getenv("HOME") + "/.klatter-burton/"
+	err := cleanenv.ReadConfig(dir+"kb.yml", &cfg)
 	if err != nil {
 		fmt.Println(err)
 		log.Fatalln("Error loading kb.yml")

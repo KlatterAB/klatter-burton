@@ -1,4 +1,4 @@
-module github.com/PatrikOlin/butler-burton
+module github.com/KlatterAB/klatter-burton
 
 go 1.15
 

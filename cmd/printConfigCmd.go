@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/PatrikOlin/butler-burton/cfg"
+	"github.com/KlatterAB/klatter-burton/cfg"
 )
 
 func PrintConfig() error {

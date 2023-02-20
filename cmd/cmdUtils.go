@@ -2,11 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
-	"github.com/PatrikOlin/butler-burton/db"
+	"github.com/KlatterAB/klatter-burton/db"
 	"github.com/PatrikOlin/skvs"
 )
 
@@ -51,8 +50,7 @@ func GetProject(checkinTime int64) (string, error) {
 	if err := db.Store.Get(strconv.FormatInt(checkinTime, 10), &name); err == skvs.ErrNotFound {
 		fmt.Println("not found")
 		return "", err
-	} else if err != nil {
-		log.Fatal(err)
+	} else if err != nil || name == "" {
 		return "", err
 	}
 

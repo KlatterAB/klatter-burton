@@ -1,6 +1,6 @@
 ## Installation
 
-> git clone https://github.com/PatrikOlin/butler-burton <br>
+> git clone https://github.com/KlatterAB/klatter-burton <br>
 > cd butler-burton <br>
 > make install
 

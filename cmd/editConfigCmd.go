@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/PatrikOlin/butler-burton/cfg"
+	"github.com/KlatterAB/klatter-burton/cfg"
 )
 
 func EditConfig() error {

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/PatrikOlin/butler-burton/cfg"
-	"github.com/PatrikOlin/butler-burton/db"
-	"github.com/PatrikOlin/butler-burton/util"
+	"github.com/KlatterAB/klatter-burton/cfg"
+	"github.com/KlatterAB/klatter-burton/db"
+	"github.com/KlatterAB/klatter-burton/util"
 )
 
 func AddProject(name, id string) error {

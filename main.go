@@ -8,10 +8,10 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/PatrikOlin/butler-burton/cfg"
-	"github.com/PatrikOlin/butler-burton/cmd"
-	"github.com/PatrikOlin/butler-burton/db"
-	"github.com/PatrikOlin/butler-burton/util"
+	"github.com/KlatterAB/klatter-burton/cfg"
+	"github.com/KlatterAB/klatter-burton/cmd"
+	"github.com/KlatterAB/klatter-burton/db"
+	"github.com/KlatterAB/klatter-burton/util"
 )
 
 var Version string
@@ -57,16 +57,14 @@ func main() {
 				Name:    "check in",
 				Aliases: []string{"ci"},
 				Usage:   "trigger check in sequence",
-				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:        "project",
-						Aliases:     []string{"p"},
-						Value:       "",
-						Usage:       "id of the project to check in time for",
-						Destination: &opts.Project.ID,
-					},
-				},
+				Flags:   []cli.Flag{},
 				Action: func(c *cli.Context) error {
+					if c.Args().Len() < 1 {
+						fmt.Println("You need to supply project id as an argument")
+						return nil
+					}
+
+					opts.Project.ID = c.Args().Get(0)
 					return cmd.Checkin(opts)
 				},
 			},
@@ -85,6 +83,22 @@ func main() {
 				Usage:   "get time spent checked in",
 				Action: func(c *cli.Context) error {
 					return cmd.CheckTime()
+				},
+			},
+			{
+				Name:    "add time",
+				Aliases: []string{"at"},
+				Usage:   "add time in minutes to a project",
+				Flags:   []cli.Flag{},
+				Action: func(c *cli.Context) error {
+					if c.Args().Len() < 2 {
+						fmt.Println("You need to supply two arguments: number of minutes and project id")
+						return nil
+					}
+
+					minutes := c.Args().Get(0)
+					projectId := c.Args().Get(1)
+					return cmd.AddTime(minutes, projectId)
 				},
 			},
 			{

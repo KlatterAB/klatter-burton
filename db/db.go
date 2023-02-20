@@ -83,6 +83,16 @@ func AddProject(name, id string) error {
 	return nil
 }
 
+func AddTimeToProject(minutes int, projectId, userId string) error {
+	inputStmt := "INSERT INTO minutes_worked (minutes, project_id, worker_id) VALUES ($1, $2, $3)"
+	_, err := db.Exec(inputStmt, minutes, projectId, userId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func makeDirectoryIfNotExists(path string) error {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return os.Mkdir(path, os.ModeDir|0755)

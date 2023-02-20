@@ -7,9 +7,9 @@ import (
 
 	"github.com/PatrikOlin/skvs"
 
-	"github.com/PatrikOlin/butler-burton/cfg"
-	"github.com/PatrikOlin/butler-burton/db"
-	"github.com/PatrikOlin/butler-burton/util"
+	"github.com/KlatterAB/klatter-burton/cfg"
+	"github.com/KlatterAB/klatter-burton/db"
+	"github.com/KlatterAB/klatter-burton/util"
 )
 
 func Checkout(opts util.Options) error {
@@ -22,15 +22,15 @@ func Checkout(opts util.Options) error {
 		return err
 	}
 	tci := CalculateTimeCheckedIn(valUnix)
-	fmt.Println("Ok, checking out.")
-	checkedInMsg := fmt.Sprintf("Time spent checked in: %s", tci)
-
 	de := time.Unix(valUnix, 0).Local().Format("15:04:05")
 	project, err := GetProject(valUnix)
-	if err != nil {
+	if err != nil || project == "" {
 		fmt.Println("Could not get project")
 		return err
 	}
+
+	fmt.Println("Ok, checking out.")
+	checkedInMsg := fmt.Sprintf("Time spent checked in: %s", tci)
 
 	db.SetMinutesWorked(int(tci.Minutes()), project, cfg.Cfg.ID)
 	// d := (15 * time.Minute)

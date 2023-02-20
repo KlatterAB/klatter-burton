@@ -3,10 +3,7 @@ VERSION := $(shell git describe --tags)
 BUILD := $(shell git rev-parse --short HEAD)
 PROJECTNAME := $(shell basename "$(PWD)")
 MANPATH := $(HOME)/.local/share/man
-APIURL := "10.10.150.25:6666"
-APISECRETS := $(APIURL)/secrets
-APICERT := $(APIURL)/cert
-BBDIR := $(HOME)/.butlerburton
+KBDIR := $(HOME)/.klatterburton
 
 # Go related variables.
 GOFILES := $(wildcard *.go)
@@ -25,15 +22,13 @@ _dummy := $(shell mkdir -p $(MANPATH)/man1)
 
 ## install: install app, runs 'go install' internally
 install:
-	curl $(APISECRETS) --create-dirs -o $(BBDIR)/private.json
-	curl $(APICERT) --create-dirs -o $(BBDIR)/butlerBurtonCert.pfx
 	go install $(LDFLAGS)
-	cp butler-burton.1.gz $(MANPATH)/man1
+	cp klatter-burton.1.gz $(MANPATH)/man1
 
 ## update: updates the installed app to a new version. Basically the same as install without downloading the cert-files
 update:
 	go install $(LDFLAGS)
-	cp butler-burton.1.gz $(MANPATH)/man1
+	cp klatter-burton.1.gz $(MANPATH)/man1
 
 ## build: build binary, runs 'go build' internally
 build:
@@ -41,13 +36,13 @@ build:
 
 ## generate and gzip manppage from markdown, uses pandoc
 manpage:
-	pandoc butlerburton.md -s -t man -o butler-burton.1
-	gzip butler-burton.1
+	pandoc klatterburton.md -s -t man -o klatter-burton.1
+	gzip klatter-burton.1
 
 ## build and interact with docker dev environment
 dev:
-	docker build -t "bb" .
-	docker run -it "bb" sh
+	docker build -t "kb" .
+	docker run -it "kb" sh
 
 .PHONY: help
 all: help

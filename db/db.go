@@ -26,7 +26,7 @@ var Store *skvs.KVStore
 var db *sql.DB
 
 func InitStore() {
-	dir := os.Getenv("HOME") + "/.klatter-burton/"
+	dir := os.Getenv("HOME") + "/.klatterburton/"
 	makeDirectoryIfNotExists(dir)
 
 	dbfile := path.Join(dir, "data.db")
@@ -108,7 +108,7 @@ func getPqslInfo() string {
 }
 
 func readEnvFromFile() {
-	dir := os.Getenv("HOME") + "/.klatter-burton/"
+	dir := os.Getenv("HOME") + "/.klatterburton/"
 	err := cleanenv.ReadConfig(dir+"kb.yml", &cfg)
 	if err != nil {
 		fmt.Println(err)

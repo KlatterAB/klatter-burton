@@ -64,7 +64,7 @@ func GetCheckinTime() (int64, error) {
 }
 
 func SetMinutesWorked(minutes int, project, user string) error {
-	inputStmt := "INSERT INTO minutes_worked (minutes, project_id, worker_id) VALUES ($1, $2, $3)"
+	inputStmt := "INSERT INTO work_log (minutes_worked, project_id, worker_id) VALUES ($1, $2, $3)"
 	_, err := db.Exec(inputStmt, minutes, project, user)
 	if err != nil {
 		return err
@@ -84,7 +84,7 @@ func AddProject(name, id string) error {
 }
 
 func AddTimeToProject(minutes int, projectId, userId string) error {
-	inputStmt := "INSERT INTO minutes_worked (minutes, project_id, worker_id) VALUES ($1, $2, $3)"
+	inputStmt := "INSERT INTO work_log (minutes_worked, project_id, worker_id) VALUES ($1, $2, $3)"
 	_, err := db.Exec(inputStmt, minutes, projectId, userId)
 	if err != nil {
 		return err

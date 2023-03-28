@@ -125,6 +125,30 @@ func main() {
 				},
 			},
 			{
+				Name:    "work log",
+				Aliases: []string{"wl"},
+				Usage:   "get the work log for a project, optionally for a person and/or a specific date",
+				Action: func(c *cli.Context) error {
+					if c.Args().Len() < 1 || c.Args().Len() == 3 {
+						fmt.Println("You need to supply at least one arguments: project id (and optionally worker id and/or from date and to date)")
+						return nil
+					}
+					params := cmd.WorkLogParams{
+						ProjectID: "",
+						WorkerID:  "",
+						FromDate:  "",
+						ToDate:    "",
+					}
+
+					params.ProjectID = c.Args().Get(0)
+					params.WorkerID = c.Args().Get(1)
+					params.FromDate = c.Args().Get(2)
+					params.ToDate = c.Args().Get(3)
+
+					return cmd.GetWorkLog(params)
+				},
+			},
+			{
 				Name:     "config",
 				Aliases:  []string{"c"},
 				Usage:    "commands directly related to config",

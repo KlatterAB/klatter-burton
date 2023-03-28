@@ -1,14 +1,16 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"path"
+	"strconv"
+	"strings"
 
 	"github.com/PatrikOlin/skvs"
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
@@ -20,10 +22,14 @@ type ConfigDatabase struct {
 	Password string `yaml:"KB_PASSWORD"`
 }
 
+type WorkLogReturn struct {
+	TotalHoursWorked float64 `db:"total_hours_worked"`
+}
+
 var cfg ConfigDatabase
 
 var Store *skvs.KVStore
-var db *sql.DB
+var db *sqlx.DB
 
 func InitStore() {
 	dir := os.Getenv("HOME") + "/.klatterburton/"
@@ -40,7 +46,7 @@ func InitStore() {
 
 func InitDB() error {
 	var err error
-	db, err = sql.Open("postgres", getPqslInfo())
+	db, err = sqlx.Open("postgres", getPqslInfo())
 
 	if err != nil {
 		fmt.Println("ingen db")
@@ -93,6 +99,36 @@ func AddTimeToProject(minutes int, projectId, userId string) error {
 	return nil
 }
 
+func GetWorkLog(projectID, workerID, fromDate, toDate string) (string, error) {
+	params := struct {
+		ProjectID string `db:"project_id"`
+		WorkerID  string `db:"worker_id"`
+		FromDate  string `db:"fromDate"`
+		ToDate    string `db:"toDate"`
+	}{
+		ProjectID: projectID,
+		WorkerID:  workerID,
+		FromDate:  fromDate,
+		ToDate:    toDate,
+	}
+
+	stmt := buildWorkLogStmt(workerID, fromDate, toDate)
+	var workLog WorkLogReturn
+
+	nstmt, err := db.PrepareNamed(stmt)
+	if err != nil {
+		return "", err
+	}
+
+	err = nstmt.Get(&workLog, params)
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+
+	return strconv.FormatFloat(workLog.TotalHoursWorked, 'f', 2, 64), nil
+}
+
 func makeDirectoryIfNotExists(path string) error {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return os.Mkdir(path, os.ModeDir|0755)
@@ -114,4 +150,18 @@ func readEnvFromFile() {
 		fmt.Println(err)
 		log.Fatalln("Error loading kb.yml")
 	}
+}
+
+func buildWorkLogStmt(workerID, fromDate, toDate string) string {
+	var sb strings.Builder
+
+	sb.WriteString("SELECT SUM(minutes_worked) / 60.0 AS total_hours_worked FROM work_log WHERE project_id = :project_id ")
+	if workerID != "" {
+		sb.WriteString("AND worker_id = :worker_id ")
+	}
+	if fromDate != "" && toDate != "" {
+		sb.WriteString("AND date BETWEEN DATE(:fromDate) AND DATE(:toDate)")
+	}
+
+	return sb.String()
 }

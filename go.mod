@@ -10,6 +10,7 @@ require (
 	github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe // indirect
 	github.com/ilyakaznacheev/cleanenv v1.2.5
 	github.com/jedib0t/go-pretty v4.3.0+incompatible // indirect
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/koltyakov/gosip v0.0.0-20210603074636-4c9eaa4e31e3
 	github.com/koltyakov/gosip-sandbox v0.0.0-20210522115717-4d41257ecc09
 	github.com/lib/pq v1.10.7

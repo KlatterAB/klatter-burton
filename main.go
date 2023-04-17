@@ -153,7 +153,8 @@ func main() {
 				Aliases: []string{"ppt"},
 				Usage:   "start a pair programming timer with a set duration so you know when it's time to switch 'positions'",
 				Action: func(c *cli.Context) error {
-					defaultSoundFilePath := "~/.klatterburton/beep.wav"
+					dir := os.Getenv("HOME") + "/.klatterburton/"
+					defaultSoundFilePath := dir + "/beep.wav"
 					defaultDuration, err := time.ParseDuration("30m")
 					if err != nil {
 						log.Panic(err)

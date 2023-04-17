@@ -1,11 +1,15 @@
 package cmd
 
 import (
+	"bytes"
+	_ "embed"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"time"
 
+	"github.com/KlatterAB/klatter-burton/assets"
 	"github.com/KlatterAB/klatter-burton/cfg"
 	"github.com/KlatterAB/klatter-burton/util"
 	"github.com/faiface/beep"
@@ -39,10 +43,17 @@ func StartTimer(params TimerParams) error {
 }
 
 func playSound(soundFilePath string) error {
-	f, err := os.Open(soundFilePath)
-	if err != nil {
-		log.Fatal(err)
-		return err
+	var f io.ReadCloser
+	var err error
+	if soundFilePath != "" {
+
+		f, err = os.Open(soundFilePath)
+		if err != nil {
+			log.Fatal(err)
+			return err
+		}
+	} else {
+		f = io.NopCloser(bytes.NewReader(assets.DefaultBeep))
 	}
 
 	s, format, err := wav.Decode(f)

@@ -1,6 +1,6 @@
 module github.com/KlatterAB/klatter-burton
 
-go 1.15
+go 1.16
 
 require (
 	github.com/PatrikOlin/skvs v0.0.0-20210222194336-87376d230895

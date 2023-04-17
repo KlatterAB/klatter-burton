@@ -149,6 +149,43 @@ func main() {
 				},
 			},
 			{
+				Name:    "pair programming timer",
+				Aliases: []string{"ppt"},
+				Usage:   "start a pair programming timer with a set duration so you know when it's time to switch 'positions'",
+				Action: func(c *cli.Context) error {
+					defaultSoundFilePath := "~/.klatterburton/beep.wav"
+					defaultDuration, err := time.ParseDuration("30m")
+					if err != nil {
+						log.Panic(err)
+					}
+					params := cmd.TimerParams{
+						Duration:      defaultDuration,
+						SoundFilePath: defaultSoundFilePath,
+					}
+
+					if c.Args().Len() == 2 {
+						dur, err := time.ParseDuration(c.Args().Get(0))
+						if err != nil {
+							fmt.Println("That is not a correctly formatted duration. Use {n}m format, i.e 15m for 15 minutes.")
+							log.Fatal(err)
+						}
+						params.Duration = dur
+						params.SoundFilePath = c.Args().Get(1)
+					}
+
+					if c.Args().Len() == 1 {
+						dur, err := time.ParseDuration(c.Args().Get(0))
+						if err != nil {
+							fmt.Println("That is not a correctly formatted duration. Use {n}m format, i.e 15m for 15 minutes.")
+							log.Fatal(err)
+						}
+						params.Duration = dur
+					}
+
+					return cmd.StartTimer(params)
+				},
+			},
+			{
 				Name:     "config",
 				Aliases:  []string{"c"},
 				Usage:    "commands directly related to config",

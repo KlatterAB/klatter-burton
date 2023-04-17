@@ -20,7 +20,7 @@ type TimerParams struct {
 
 func StartTimer(params TimerParams) error {
 
-	fmt.Printf("Starting %.0f minutes long work session\n", params.Duration.Minutes())
+	fmt.Printf("Starting a %.0f minutes long work session\n", params.Duration.Minutes())
 	timer := time.NewTimer(params.Duration)
 
 	<-timer.C
@@ -32,7 +32,7 @@ func StartTimer(params TimerParams) error {
 
 	fmt.Println("Time's up!")
 	if cfg.Cfg.Notifications == true {
-		util.Notify("Time to switch!", fmt.Sprintf("Your %.0f minutes work session is over", params.Duration.Minutes()))
+		util.Notify("Time to switch!", fmt.Sprintf("Your %.0f minutes long work session is over", params.Duration.Minutes()))
 	}
 
 	return nil

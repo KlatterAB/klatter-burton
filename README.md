@@ -8,20 +8,15 @@ or download the binary and run it
 
 ## Configuration
 
-Edit config-file in `$HOME/.config/butlerburton`
+Edit config-file in `$HOME/.config/klatter-burton`
 
 Example-config:
 
 ```yaml
-name: "Butler Burton"
+name: Klatter Burton
 color: "#46D9FF"
-webhook_url: "<Teams webhook url>"
 notifications: true
-vab_msg: "Jag vabbar idag, försök hålla skutan flytande så är jag tillbaks imorgon"
-time_sheet:
-    employee_id: "0000",
-    path: "/home/burton/.butlerburton/"
-    update: true
+id: kb
 ```
 
 ## Development
